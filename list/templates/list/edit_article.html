@@ -1,0 +1,76 @@
+{% extends "list/base.html" %}
+
+{% block content %}
+
+{% if context.message %}
+<script>
+    alert("{{ context.message }}");
+</script>
+{% endif %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="{% url 'list:dashboard' %}">Articles</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'list:dashboard' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'list:write_article' %}">Write Article</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Settings
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{% url 'list:my_articles' %}">My Articles</a>
+          <a class="dropdown-item" href="{% url 'list:change_password' %}">Change Password</a>
+<!--          <div class="dropdown-divider"></div>-->
+          <a class="dropdown-item" href="{% url 'list:change_pref' %}">Change Preferences</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+
+<div class="container">
+<div class="row">
+  <div class="col-sm-9 col-md-7 col-lg-5 mx-auto myForm">
+    <div class="card card-signin my-5">
+      <div class="card-body">
+        <h5 class="card-title text-center">Edit Article</h5>
+        <form action="{% url 'list:edit_article' %}" method="post" class="form-signin">
+            {% csrf_token %}
+            <input type="hidden" id="article_id" name="article_id" value="{{ context.article.id }}">
+          <div class="form-group">
+              <input type="text" id="title" name="title" class="form-control" value="{{ context.article.title }}" placeholder="Title" required autofocus>
+          </div>
+          <div class="form-group">
+              <input type="text" id="desc" name="desc" class="form-control" value="{{ context.article.desc }}" placeholder="Description" required>
+          </div>
+          <div class="form-group">
+              <select class="form-control" id="category" name="category">
+                {% for cat in context.categories %}
+                 <option value="{{ cat.id }}" {% if context.article.cat == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+                {% endfor %}
+              </select>
+          </div>
+          <div class="form-group">
+              <input type="text" class="form-control" name="tags" id="tags" value="{{ context.article.tags }}" placeholder="Tags" required>
+          </div>
+          <br>
+          <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Update</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+{% endblock %}

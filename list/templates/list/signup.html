@@ -1,0 +1,66 @@
+{% extends "list/base.html" %}
+
+{% block content %}
+
+<!--<h1>Content goes here</h1>-->
+{% if context.message %}
+<script>
+    alert("{{ context.message }}");
+</script>
+{% endif %}
+<div class="container">
+<div class="row">
+  <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+    <div class="card card-signin my-5">
+      <div class="card-body">
+        <h5 class="btn btn-primary text-right" ><a class="text-dark text-right" href="{% url 'list:login' %}">Sign In</a></h5>
+        <h5 class="card-title text-center">Sign Up</h5>
+        <form action="{% url 'list:signup' %}" method="post" class="form-signin">
+            {% csrf_token %}
+          <div class="form-label-group">
+              <input type="text" id="firstName" name="firstName" class="form-control" placeholder="First Name" value="{{ context.fname }}" required autofocus>
+          </div>
+            <br>
+          <div class="form-label-group">
+              <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Last Name" value="{{ context.lname }}" required>
+          </div>
+            <br>
+           <div class="form-label-group">
+              <input type="number" id="phone" name="phone" class="form-control" placeholder="Phone" maxlength="10" minlength="10" value="{{ context.phone }}" required>
+          </div>
+            <br>
+          <div class="form-label-group">
+              <input type="email" id="inputEmail" name="inputEmail" class="form-control" placeholder="Email address" value="{{ context.email }}" required>
+          </div>
+            <br>
+          <div class="form-label-group">
+              <input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="Password" required>
+          </div>
+          <br>
+          <div class="form-label-group">
+              <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm Password" required>
+          </div>
+          <br>
+          <div class="form-label-group">
+              <h5>Preferences</h5>
+              {% for check in context.categories %}
+<!--              <label for="pref{{ check.id }}">{{ check.name }}</label>-->
+<!--              <input type="checkbox" id="pref{{ check.id }}" name="preferences" class="form-control" value="{{ check.id }}" required>-->
+              <!-- Default unchecked -->
+
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="pref{{ check.id }}" name="preferences" value="{{ check.id }}" {% if check.id in context.preferences %}checked{% endif %}>
+                <label class="custom-control-label" for="pref{{ check.id }}">{{ check.name }}</label>
+              </div>
+              {% endfor %}
+          </div>
+          <br>
+          <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign Up</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+{% endblock %}

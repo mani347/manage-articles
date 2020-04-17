@@ -1,0 +1,140 @@
+{% extends "list/base.html" %}
+
+{% block content %}
+
+{% if context.message %}
+<script>
+    alert("{{ context.message }}");
+</script>
+{% endif %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="{% url 'list:dashboard' %}">Articles</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'list:dashboard' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'list:write_article' %}">Write Article</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Settings
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{% url 'list:write_article' %}">My Articles</a>
+          <a class="dropdown-item" href="{% url 'list:change_password' %}">Change Password</a>
+<!--          <div class="dropdown-divider"></div>-->
+          <a class="dropdown-item" href="{% url 'list:change_pref' %}">Change Preferences</a>
+          <a class="dropdown-item" href="{% url 'list:logout' %}">Logout</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+<!--<h1>Dashboard Content</h1>-->
+
+<br>
+
+<h4 class="text-center"> Write Article </h4>
+
+<br>
+
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+<div class="container">
+    <div class="row">
+        <div class="form-group col-md-6">
+            <input type="text" class="form-control" id="title" name="title" placeholder="Title" required>
+        </div>
+
+        <div class="form-group col-md-6">
+<!--            <label for="category">Category</label>-->
+            <select class="form-control" id="category" name="category">
+                {% for cat in context.categories %}
+              <option value="{{ cat.id }}">{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            <input type="text" id="desc" name="desc" class="form-control" placeholder="Description" required>
+        </div>
+
+        <div class="form-group col-md-6">
+            <input type="file" name="image" id="image" class="form-control">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            <input type="text" id="tags" name="tags" class="form-control" placeholder="Tags" required>
+        </div>
+        <div class="col-md-6"></div>
+    </div>
+
+    <div class="row">
+        <br>
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <input type="submit" class="btn btn-primary" value="Submit">
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
+</form>
+<br>
+<hr>
+
+<div class="col-md-12">
+  <h2 class="text-center">{% if context.articles %}Articles{% else %}No Articles Found{% endif %}</h2>
+</div>
+
+
+{% for article in context.articles %}
+<br>
+<div id="{{ article.id }}">
+<div class="col-md-2"></div>
+<div class="container col-md-8">
+  <div class="card">
+  <div class="card-body">
+  <div class="row">
+    <div class="col-md-2"> <img src="{{ article.image }}" alt="NO Image"> </div>
+    <div class="col-md-6"> <h3 class="text-center">{{ article.title }}</h3> </div>
+    <div class="col-md-4"> <h6 class="text-center">Category: {{ article.category }}</h6> </div>
+  </div>
+  <hr>
+  <div class="row">
+    <p class="text-center">{{ article.desc }}</p>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-md-3">
+      <p class="text-center" id="likes{{ article.id }}">{{ article.likes }} Likes</p>
+    </div>
+    <div class="col-md-3">
+      <p class="text-center" id="dislikes{{ article.id }}">{{ article.dislikes }} Dis Likes</p>
+    </div>
+    <div class="col-md-3">
+      <a href="{% url 'list:edit_article' %}?id={{ article.id }}" class="btn btn-primary">Edit</a>
+    </div>
+    <div class="col-md-3">
+      <a href="{% url 'list:delete_article' %}?id={{ article.id }}" class="btn btn-primary">Delete</a>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<div class="col-md-2"></div>
+</div>
+<br>
+{% endfor %}
+
+{% endblock %}
